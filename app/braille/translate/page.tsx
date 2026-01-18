@@ -5,30 +5,54 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { tokenizeToBraille, cellsToUnicode } from "@/shared/braille";
+import { saveHistory, loadHistory, deleteHistory } from "@/shared/braille";
+
 import { BrailleCell } from "@/app/braille/components/BrailleCell";
+import type { BrailleHistoryItem } from "@/shared/braille/history";
 
 type ViewMode = "unicode" | "dots";
 
 export default function TranslatePage() {
   const [input, setInput] = useState("");
   const [view, setView] = useState<ViewMode>("unicode");
+  const [history, setHistory] = useState<BrailleHistoryItem[]>([]);
 
   const tokens = useMemo(() => tokenizeToBraille(input), [input]);
 
-  // Unicode表示用（全トークンの cells を Unicode にして連結）
   const brailleUnicode = useMemo(
     () => tokens.map((t) => cellsToUnicode(t.cells)).join(""),
-    [tokens]
+    [tokens],
   );
+
+
+  const handleSave = () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    saveHistory({
+      id: Date.now().toString(),
+      input: trimmed,
+      createdAt: Date.now(),
+    });
+
+    setHistory(loadHistory());
+  };
+
+  const handleLoad = (item: BrailleHistoryItem) => {
+    setInput(item.input);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteHistory(id);
+    setHistory(loadHistory());
+  };
 
   return (
     <section className="space-y-4">
-      {/* 翻訳セクションヘッダー */}
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-zinc-600">翻訳</h2>
 
         <div className="flex items-center gap-2">
-          {/* 表示切替 */}
           <div className="flex rounded-full border bg-white p-1">
             <button
               type="button"
@@ -56,7 +80,6 @@ export default function TranslatePage() {
             </button>
           </div>
 
-          {/* デュアルディスプレイ用の固定表ボタン */}
           <Link
             href="/braille/chart"
             target="_blank"
@@ -67,9 +90,7 @@ export default function TranslatePage() {
         </div>
       </div>
 
-      {/* レイアウト本体：モバイル縦 / md以上で2カラム */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* 左：入力 */}
         <div className="space-y-2">
           <label className="text-xs font-semibold text-zinc-600">
             日本語テキスト
@@ -80,9 +101,16 @@ export default function TranslatePage() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="例）あさがお"
           />
+
+          <button
+            type="button"
+            onClick={handleSave}
+            className="rounded-lg border px-3 py-1 text-xs text-zinc-700 hover:bg-zinc-100"
+          >
+            履歴に保存
+          </button>
         </div>
 
-        {/* 右：出力 */}
         <div className="space-y-2">
           <label className="text-xs font-semibold text-zinc-600">点字</label>
 
@@ -128,6 +156,32 @@ export default function TranslatePage() {
           </div>
         </div>
       </div>
+
+      {history.length > 0 && (
+        <div className="space-y-2">
+          <div className="text-xs font-semibold text-zinc-600">履歴</div>
+          <div className="space-y-2">
+            {history.map((h) => (
+              <div key={h.id} className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleLoad(h)}
+                  className="text-sm text-zinc-700 hover:underline"
+                >
+                  {h.input}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(h.id)}
+                  className="ml-auto rounded border px-2 py-1 text-xs"
+                >
+                  削除
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
