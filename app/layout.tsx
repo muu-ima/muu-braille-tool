@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="min-h-screen overflow-hidden text-gray-900">
+      <body className="min-h-screen overflow-auto text-gray-900">
         {/* 共通ヘッダー */}
         <header className="w-full border-b ">
           <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
@@ -23,6 +23,7 @@ export default function RootLayout({
             </div>
             <nav className="flex gap-4 text-sm">
               <Link href="/braille/translate">点字ツール</Link>
+              <Link href="https://enyukari.capoo.jp/cocco-braille-card/">エディタ</Link>
             </nav>
           </div>
         </header>
