@@ -98,31 +98,23 @@ export default function ChartPage() {
         デュアルディスプレイの場合は、この画面をサブモニターに置いておくと便利です。
       </p>
 
-      <div className="max-h-120 overflow-auto rounded-xl border bg-zinc-50 text-sm">
-        <table className="w-full text-left">
-          <thead className="bg-white/70 border-b">
-            <tr>
-              <th className="px-2 py-1">かな</th>
-              <th className="px-2 py-1">点字</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map(({ kana, braille, kind }) => (
-              <tr key={kana} className="border-b last:border-b-0">
-                <td className="px-2 py-1 text-lg">{kana}</td>
-                <td
-                  className={clsx(
-                    "px-2 py-1 text-xl",
-                    kind === "dakuon" && "bg-yellow-50",
-                    kind === "handakuon" && "bg-green-50",
-                  )}
-                >
-                  {braille}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="overflow-auto rounded-xl border bg-zinc-50 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+          {entries.map(({ kana, braille, kind }) => (
+            <div
+              key={kana}
+              className={clsx(
+                "flex items-center justify-between rounded-lg border px-3 py-2",
+                kind === "dakuon" && "bg-yellow-200",
+                kind === "handakuon" && "bg-green-200",
+                kind === "other" && "bg-white",
+              )}
+            >
+              <div className="text-xs font-semibold text-zinc-700">{kana}</div>
+              <div className="text-xl">{braille}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
