@@ -3,9 +3,8 @@
 
 import { useState } from "react";
 import { BrailleCell } from "@/app/braille/components/BrailleCell";
-import { BRAILLE_MAP } from "@/shared/braille/table"; 
-import type { Dot } from "@/shared/braille/types";
-import clsx from "clsx";
+import { BrailleTabs, TabType } from "@/app/braille/components/TabButton";
+import { tokenizeToBraille } from "@/shared/braille";
 
 const GOJUON_ROWS = [
   { label: "あ行", list: ["あ", "い", "う", "え", "お"] },
@@ -18,7 +17,6 @@ const GOJUON_ROWS = [
   { label: "や行", list: ["や", "ゆ", "よ"] },
   { label: "ら行", list: ["ら", "り", "る", "れ", "ろ"] },
   { label: "わ行", list: ["わ", "を", "ん"] },
-  { label: "促音、長音", list: ["っ", "ー"] },
 ];
 
 const DAKUON_ROWS = [
@@ -35,98 +33,55 @@ const HANDAKUON_ROWS = [
 const A_TO_N_ROWS = GOJUON_ROWS.slice(0, 5);
 const H_TO_W_ROWS = GOJUON_ROWS.slice(5);
 
-function makeEntry(kana: string) {
-  const e = BRAILLE_MAP[kana];
-  return {
-    kana,
-    dots: (e?.dots ?? []) as Dot[],
-    kind: e?.kind ?? "other",
-  };
-}
+const ROW_MAP: Record<TabType, typeof GOJUON_ROWS> = {
+  a_to_n: A_TO_N_ROWS,
+  h_to_w: H_TO_W_ROWS,
+  dakuon: DAKUON_ROWS,
+  handakuon: HANDAKUON_ROWS,
+};
 
 export default function ChartPage() {
-  // ★ここで entries を作り直さない（消す）
+  const [tab, setTab] = useState<TabType>("a_to_n");
 
-  type Tab = "a_to_n" | "h_to_w" | "dakuon" | "handakuon";
-  const [tab, setTab] = useState<Tab>("a_to_n");
-
-  const rows =
-    tab === "a_to_n"
-      ? A_TO_N_ROWS
-      : tab === "h_to_w"
-        ? H_TO_W_ROWS
-        : tab === "dakuon"
-          ? DAKUON_ROWS
-          : HANDAKUON_ROWS;
+  // 入力値（tab）から、次のmapへの入力値（rows）を決定する処理
+  const rows = ROW_MAP[tab];
 
   return (
     <section className="space-y-4">
-      <h2 className="text-sm font-semibold text-zinc-600">固定点字表</h2>
-      <p className="text-xs text-zinc-500">
-        デュアルディスプレイの場合は、この画面をサブモニターに置いておくと便利です。
-      </p>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setTab("a_to_n")}
-          className={clsx(
-            "rounded-full border px-3 py-1 text-xs",
-            tab === "a_to_n" ? "bg-black text-white" : "bg-white text-zinc-700",
-          )}
-        >
-          あ行～な行
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("h_to_w")}
-          className={clsx(
-            "rounded-full border px-3 py-1 text-xs",
-            tab === "h_to_w" ? "bg-black text-white" : "bg-white text-zinc-700",
-          )}
-        >
-          は行～わ行
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("dakuon")}
-          className={clsx(
-            "rounded-full border px-3 py-1 text-xs",
-            tab === "dakuon" ? "bg-black text-white" : "bg-white text-zinc-700",
-          )}
-        >
-          濁音
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("handakuon")}
-          className={clsx(
-            "rounded-full border px-3 py-1 text-xs",
-            tab === "handakuon"
-              ? "bg-black text-white"
-              : "bg-white text-zinc-700",
-          )}
-        >
-          半濁音
-        </button>
-      </div>
+      <header>
+        <h2 className="text-sm font-semibold text-zinc-600">固定点字表</h2>
+        <p className="text-xs text-zinc-500">
+          デュアルディスプレイの場合は、この画面をサブモニターに置いておくと便利です。
+        </p>
+      </header>
+
+      {/* mapで動くタブコンポーネント */}
+      <BrailleTabs currentTab={tab} onTabChange={setTab} />
+
       <div className="overflow-auto rounded-xl border bg-zinc-50 text-sm">
         {rows.map((row) => (
-          <div key={row.label}>
-            <div className="text-xs font-semibold text-zinc-500 mb-1 px-2 py-1">
+          <div key={row.label} className="p-2">
+            <div className="text-base font-bold text-zinc-500 mb-1 px-2 py-1">
               {row.label}
             </div>
-            <div className="grid grid-cols-5 gap-2 px-2 mb-2">
+            <div className="grid grid-cols-5 gap-2">
               {row.list.map((kana) => {
-                const entry = makeEntry(kana);
+                const tokens = tokenizeToBraille(kana);
                 return (
                   <div
-                    key={entry.kana}
-                    className="flex items-center justify-between rounded-lg border px-3 py-2"
+                    key={kana}
+                    className="flex items-center justify-between rounded-lg border bg-white px-3 py-2"
                   >
-                    <div className="text-xs font-semibold text-zinc-700">
-                      {entry.kana}
+                    <span className="text-base font-bold text-zinc-700">
+                      {kana}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {tokens.flatMap((token, ti) =>
+                        token.cells.map((cell, ci) => (
+                          <BrailleCell key={`${ti}-${ci}`} dots={cell} />
+                        )),
+                      )}
                     </div>
-                      <BrailleCell dots={entry.dots} />
                   </div>
                 );
               })}

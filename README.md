@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Braille Tool（点字ツール）
 
-## Getting Started
+日本語テキストを 日本語点字に変換・表示するツールです。
+翻訳機能と固定点字表を分離し、点字変換ロジックを共通化する設計を採用しています。
 
-First, run the development server:
+機能概要
+翻訳（Translate）
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+日本語テキストを入力すると、点字セル列に変換して表示
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+濁音・半濁音・長音・促音などは 日本語点字のルールに従い複数セルで表現
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+翻訳履歴の保存・再選択・削除に対応
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+固定点字表（Chart）
 
-## Learn More
+五十音・濁音・半濁音をタブで切り替えて一覧表示
 
-To learn more about Next.js, take a look at the following resources:
+翻訳画面と 同一の変換ロジック を使って点字を描画
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+「1文字 = 1セル」ではなく、実際の点字構造（複数セル）を正確に可視化
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+設計方針（重要）
+✅ 変換ロジックの一元化
 
-## Deploy on Vercel
+点字変換のルールは shared/braille に集約
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+UI（翻訳 / 固定表）は 変換結果を表示するだけ
