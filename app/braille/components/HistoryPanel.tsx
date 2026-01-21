@@ -54,7 +54,7 @@ export default function HistoryPanel({
         <button
           type="button"
           onClick={handleSave}
-          className="rounded-lg border px-3 py-1 text-xs text-zinc-700 hover:bg-zinc-100"
+          className="rounded-lg bg-white border px-3 py-1 text-xs text-zinc-700 hover:bg-zinc-100"
         >
           履歴に保存
         </button>
