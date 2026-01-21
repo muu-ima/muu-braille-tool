@@ -34,7 +34,7 @@ export default function TranslatePage() {
           <Link
             href="/braille/chart"
             target="_blank"
-            className="rounded-full border px-3 py-1 text-xs text-zinc-600 hover:bg-zinc-100"
+            className="rounded-full border px-3 py-1 text-xs bg-white text-zinc-600 hover:bg-zinc-100"
           >
             点字表を別ウィンドウで開く
           </Link>
@@ -49,11 +49,17 @@ export default function TranslatePage() {
               日本語テキスト
             </label>
             {/* 右と高さを揃えるためのダミー（不要なら空でOK） */}
-            <div className="w-35" />
+            <button 
+            type="button"
+            onClick={() => setInput("")}
+            className="rounded-full border text-xs bg-white px-2 py-0.5 text-zinc-500 hover:bg-zinc-900/5 hover:text-zinc-700 transition">
+              Clear
+            </button>
+            
           </div>
 
           <textarea
-            className="h-48 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900/10"
+            className="h-48 w-full rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900/10"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="例）あさがお"

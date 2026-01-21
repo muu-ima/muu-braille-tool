@@ -28,6 +28,7 @@ const DAKUON_ROWS = [
 
 const HANDAKUON_ROWS = [
   { label: "ぱ行", list: ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"] },
+  { label: "記号", list: ["っ", "ー", "、", "。"] },
 ];
 
 const A_TO_N_ROWS = GOJUON_ROWS.slice(0, 5);

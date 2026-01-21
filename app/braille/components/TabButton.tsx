@@ -8,7 +8,7 @@ const TABS = [
   { id: "a_to_n", label: "あ行～な行" },
   { id: "h_to_w", label: "は行～わ行" },
   { id: "dakuon", label: "濁音" },
-  { id: "handakuon", label: "半濁音・長音・促音" },
+  { id: "handakuon", label: "半濁音・促音・長音・記号" },
 ] as const;
 
 export const BrailleTabs = ({ 

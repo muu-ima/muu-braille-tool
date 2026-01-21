@@ -4,7 +4,13 @@ import { BrailleTabs } from "./BrailleTabs";
 
 export default function BrailleLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col"
+    style={{
+      backgroundImage: "url(/braille-bg.png)",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}>
       {/* ヘッダー＋メイン */}
       <main className="mx-auto w-full max-w-4xl px-4 py-8 space-y-6 flex-1">
         <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

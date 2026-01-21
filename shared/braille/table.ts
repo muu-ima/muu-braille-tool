@@ -74,6 +74,8 @@ export const BRAILLE_TABLE: BrailleEntry[] = [
   { key: "゜", dots: [6], kind: "symbol" },
 
   // 記号（最低限）
+  { key: "っ", dots: [2], kind: "symbol" }, 
+  { key: "ー", dots: [2, 5], kind: "symbol" }, 
   { key: "。", dots: [2, 5, 6], kind: "symbol" },
   { key: "、", dots: [2], kind: "symbol" },
 ];
